@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pizza Clicker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #2c3e50;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #34495e;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        #score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        #username {
+            font-size: 18px;
+            color: #3498db;
+        }
+
+        #pizza {
+            width: 200px;
+            height: 200px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            animation: float 3s infinite ease-in-out;
+        }
+
+        #pizza:active {
+            transform: scale(0.95);
+        }
+
+        .score-popup {
+            position: absolute;
+            color: #e74c3c;
+            font-weight: bold;
+            pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <div id="score">Счет: 0</div>
+        <div id="username"></div>
+    </div>
+    
+    <img id="pizza" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjZmZkNzAwIiBkPSJNMjU2IDBDMTE0LjYgMCAwIDExNC42IDAgMjU2czExNC42IDI1NiAyNTYgMjU2czI1Ni0xMTQuNiAyNTYtMjU2UzM5Ny40IDAgMjU2IDB6Ii8+PHBhdGggZmlsbD0iI2ZmOTgxMSIgZD0iTTI1NiAwdjUxMmMxNDEuNCAwIDI1Ni0xMTQuNiAyNTYtMjU2UzM5Ny40IDAgMjU2IDB6Ii8+PHBhdGggZmlsbD0iI2ZmNDQwMCIgZD0iTTUxMiAyNTZjMC0xNDEuNC0xMTQuNi0yNTYtMjU2LTI1NlMwIDExNC42IDAgMjU2czExNC42IDI1NiAyNTYgMjU2UzUxMiAzOTcuNCA1MTIgMjU2ek00OCAyNTZjMC0xMTQuOSA5My4xLTIwOCAyMDgtMjA4czIwOCA5My4xIDIwOCAyMDhTMzcwLjkgNDY0IDI1NiA0NjRTNDggMzcwLjkgNDggMjU2eiIvPjxwYXRoIGZpbGw9IiNmZjQ0MDAiIGQ9Ik0xNjAgMTYwYy0xNy43IDAtMzIgMTQuMy0zMiAzMnMxNC4zIDMyIDMyIDMyIDMyLTE0LjMgMzItMzItMTQuMy0zMi0zMi0zMnptOTYgOTZjLTE3LjcgMC0zMiAxNC4zLTMyIDMyczE0LjMgMzIgMzIgMzIgMzItMTQuMyAzMi0zMi0xNC4zLTMyLTMyLTMyem05Ni05NmMtMTcuNyAwLTMyIDE0LjMtMzIgMzJzMTQuMyAzMiAzMiAzMiAzMi0xNC4zIDMyLTMyLTE0LjMtMzItMzItMzJ6Ii8+PC9zdmc+" alt="Pizza">
+
+    <script>
+        let score = 0;
+        const scoreElement = document.getElementById('score');
+        const pizzaElement = document.getElementById('pizza');
+        const usernameElement = document.getElementById('username');
+        
+        // Initialize Telegram WebApp
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        
+        // Set username
+        usernameElement.textContent = tg.initDataUnsafe.user?.first_name || 'Гость';
+        
+        // Pizza click handler
+        pizzaElement.addEventListener('click', (e) => {
+            score++;
+            scoreElement.textContent = `Счет: ${score}`;
+            
+            // Create score popup
+            const popup = document.createElement('div');
+            popup.className = 'score-popup';
+            popup.textContent = '+1';
+            popup.style.left = (e.clientX - 10) + 'px';
+            popup.style.top = (e.clientY - 20) + 'px';
+            document.body.appendChild(popup);
+            
+            // Add spin animation to pizza
+            pizzaElement.style.animation = 'spin 0.3s ease-out';
+            setTimeout(() => {
+                pizzaElement.style.animation = 'float 3s infinite ease-in-out';
+            }, 300);
+            
+            // Remove popup after animation
+            setTimeout(() => {
+                popup.remove();
+            }, 1000);
+        });
+    </script>
+</body>
+</html> 
